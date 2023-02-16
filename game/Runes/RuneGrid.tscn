@@ -1,0 +1,25 @@
+[gd_scene load_steps=5 format=2]
+
+[ext_resource path="res://Runes/RuneGrid.gd" type="Script" id=1]
+[ext_resource path="res://Art/Untitled.png" type="Texture" id=2]
+[ext_resource path="res://SelectRune.gd" type="Script" id=3]
+[ext_resource path="res://BlockInputVisible.gd" type="Script" id=4]
+
+[node name="RuneGrid" type="Node2D"]
+position = Vector2( 25, 25 )
+script = ExtResource( 1 )
+
+[node name="SocketGroup" type="Node2D" parent="."]
+
+[node name="SelectRune" type="Node2D" parent="."]
+z_index = 1
+script = ExtResource( 3 )
+
+[node name="Sprite" type="Sprite" parent="SelectRune"]
+position = Vector2( -25, 0 )
+scale = Vector2( 5, 5 )
+texture = ExtResource( 2 )
+script = ExtResource( 4 )
+
+[node name="RuneGroup" type="Node2D" parent="."]
+z_index = 2
