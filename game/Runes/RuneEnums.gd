@@ -1,16 +1,42 @@
-extends Node
+class_name RuneEnums
 
+# Every stat consists of a Value and Multiplier
+enum StatTypes {
+	COOLDOWN, # how often a spell can be casted
+	SIZE, # size of projektile/ spanned creature, ...
+	DMG, # Amount 
+	SPEED,
+	LIFETIME,
+	CHAINS,
+	AMMOUNT,
+	SPREAD,
+	BOUNCE, # How often it bounces from the screen Edge
+}
+# Some runes have tags. They group runes by type and can add effects
+enum Tags{
+	TIMER,
+	OUTPUT,
+	INPUT,
+	CONNECTOR,
+}
 
-# Declare member variables here. Examples:
-# var a = 2
-# var b = "text"
+enum Direction{
+	TOP,
+	BOTTOM,
+	LEFT,
+	RIGHT
+}
 
-
-# Called when the node enters the scene tree for the first time.
-func _ready():
-	pass # Replace with function body.
-
-
-# Called every frame. 'delta' is the elapsed time since the previous frame.
-#func _process(delta):
-#	pass
+static func invertDirection(direction: int):
+	match direction:
+		Direction.TOP:
+			return Direction.BOTTOM
+		Direction.BOTTOM:
+			return Direction.TOP
+		Direction.LEFT:
+			return Direction.RIGHT
+		Direction.RIGHT:
+			return Direction.LEFT
+	pass
+static func dirIntToString(number: int) -> String:
+	return Direction.keys()[number]

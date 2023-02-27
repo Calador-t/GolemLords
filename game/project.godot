@@ -10,6 +10,11 @@ config_version=4
 
 _global_script_classes=[ {
 "base": "Rune",
+"class": "CurveRune",
+"language": "GDScript",
+"path": "res://Runes/CurveRune.gd"
+}, {
+"base": "Rune",
 "class": "EmitterRune",
 "language": "GDScript",
 "path": "res://Runes/EmitterRune.gd"
@@ -25,9 +30,9 @@ _global_script_classes=[ {
 "path": "res://Runes/Rune.gd"
 }, {
 "base": "Reference",
-"class": "RuneSignal",
+"class": "RuneEnums",
 "language": "GDScript",
-"path": "res://Runes/RuneSignal.gd"
+"path": "res://Runes/RuneEnums.gd"
 }, {
 "base": "Area2D",
 "class": "RuneSocket",
@@ -35,10 +40,11 @@ _global_script_classes=[ {
 "path": "res://Runes/RuneSocket.gd"
 } ]
 _global_script_class_icons={
+"CurveRune": "",
 "EmitterRune": "",
 "PipeRune": "",
 "Rune": "",
-"RuneSignal": "",
+"RuneEnums": "",
 "RuneSocket": ""
 }
 

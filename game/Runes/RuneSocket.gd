@@ -17,10 +17,8 @@ func _ready():
 func _unhandled_input(event):
 	if event is InputEventMouseButton && event.pressed && event.button_index == BUTTON_LEFT:
 		if $SocketSprite.get_rect().has_point($SocketSprite.to_local(event.position)):
-			if runeGrid != null && runeGrid.has_method("placeRune"):
+			if runeGrid != null && runeGrid.has_method("socketSelected"):
 				runeGrid.socketSelected(index)
-
-			print('test')
 			get_tree().set_input_as_handled() # if you 
 
 #func _input(event):

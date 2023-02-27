@@ -1,14 +1,10 @@
 [gd_scene load_steps=2 format=2]
 
-<<<<<<< Updated upstream
-[ext_resource path="res://RuneState.gd" type="Script" id=1]
-
-[node name="Spatial" type="Spatial"]
-script = ExtResource( 1 )
-=======
 [ext_resource path="res://Runes/RuneGrid.tscn" type="PackedScene" id=1]
 
 [node name="Spatial" type="Node2D"]
 
 [node name="RuneGrid" parent="." instance=ExtResource( 1 )]
->>>>>>> Stashed changes
+[ext_resource path="res://Runes/RuneGrid.tscn" type="PackedScene" id=1]
+
+
