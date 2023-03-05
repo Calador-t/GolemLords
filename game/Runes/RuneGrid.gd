@@ -36,7 +36,7 @@ func _ready():
 func _unhandled_input(event):
 	if settingSocket && event.is_action("rotateRune") && event.is_pressed():
 		print("rotate")
-		settingSocketRotation += 90
+		settingSocketRotation = (settingSocketRotation + 1) % 4
 	if settingSocket && event is InputEventKey && event.is_pressed():
 		var newRune = null
 		match event.scancode:
@@ -48,74 +48,29 @@ func _unhandled_input(event):
 				newRune = runes[1].instance()
 			KEY_3:
 				newRune = runes[2].instance()
-		if newRune != null:
-			addAdjectedRunes(newRune, settingSocketRotation, settingSocketIndex)
-			updateAdjectedRunes(newRune, settingSocketIndex)
+		if newRune != null && newRune.is_in_group("Rune"):
 			newRune.setRuneGrid(self)
 			newRune.setIndex(settingSocketIndex)
+			newRune.setRuneRotation(settingSocketRotation % 4 as int)
 			newRune.position = indexToPos(settingSocketIndex)
 			if __runeGrid[settingSocketIndex.x][settingSocketIndex.y] != null:
 				__runeGrid[settingSocketIndex.x][settingSocketIndex.y].queue_free()
+				__runeGrid[settingSocketIndex.x][settingSocketIndex.y] = null
 			__runeGrid[settingSocketIndex.x][settingSocketIndex.y] = newRune
 			$RuneGroup.add_child(newRune)
-			newRune.rotation_degrees = settingSocketRotation
+			newRune.rotation_degrees = settingSocketRotation * 90
 			settingSocket = false
 
-func addAdjectedRunes(rune, rotation: int, index: Vector2):
-	if isRune(rune):
-		var topRune = getTopRuneSafe(index)
-		var bottomRune = getBottomRuneSafe(index)
-		var leftRune = getLeftRuneSafe(index)
-		var rightRune = getRightRuneSafe(index)
-		
-		var rotate: int = rotation % 360 / 90 as int
-		
-		rune.setRuneRotation(rotate)
-		rune.setTopRune(topRune)
-		rune.setBottomRune(bottomRune)
-		rune.setLeftRune(leftRune)
-		rune.setRightRune(rightRune)
-		pass
-	pass
 
 func getRuneByIndex(index: Vector2):
 	var validX = index.x >= 0 && index.x < __runeGrid.size()
 	var validY = index.y >= 0 && index.y < __runeGrid[0].size()
 	
 	if validX && validY:
+#		if __runeGrid[index.x][index.y] != null:
+#			__runeGrid[index.x][index.y].queue_free()
+#			__runeGrid[index.x][index.y] = null
 		return __runeGrid[index.x][index.y]
-	return null
-
-func updateAdjectedRunes(rune, index: Vector2):
-	var topRune = getTopRuneSafe(index)
-	if isRune(topRune):
-		topRune.setBottomRune(rune)
-	var bottomRune = getBottomRuneSafe(index)
-	if isRune(bottomRune):
-		bottomRune.setTopRune(rune)
-	var leftRune = getLeftRuneSafe(index)
-	if isRune(leftRune):
-		leftRune.setRightRune(rune)
-	var rightRune = getRightRuneSafe(index)
-	if isRune(rightRune):
-		rightRune.setLeftRune(rune)
-
-
-func getTopRuneSafe(index: Vector2) -> Node2D:
-	if index.y-1 >= 0:
-		return __runeGrid[index.x][index.y-1]
-	return null
-func getBottomRuneSafe(index: Vector2) -> Node2D:
-	if index.y+1 < __runeGrid[0].size():
-		return  __runeGrid[index.x][index.y+1]
-	return null
-func getLeftRuneSafe(index: Vector2) -> Node2D:
-	if index.x-1 >= 0:
-		return __runeGrid[index.x-1][index.y]
-	return null
-func getRightRuneSafe(index: Vector2) -> Node2D:
-	if index.x+1 < __runeGrid.size():
-		return __runeGrid[index.x+1][index.y]
 	return null
 
 func isRune(rune: Node2D) -> bool:
@@ -130,3 +85,12 @@ func socketSelected(index: Vector2):
 
 func indexToPos(indexVector: Vector2) -> Vector2:
 	return Vector2(indexVector.x * SOCKET_SIZE, indexVector.y * SOCKET_SIZE)
+
+
+func removeRune(index: Vector2):
+	var validX = index.x >= 0 && index.x < __runeGrid.size()
+	var validY = index.y >= 0 && index.y < __runeGrid[0].size()
+	
+	if validX && validY:
+		__runeGrid[index.x][index.y] = null
+

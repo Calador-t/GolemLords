@@ -4,61 +4,67 @@ class_name CurveRune
 
 const POWER_COST = 0.01
 var __timer: Timer
-var __inputDirection: int
 
 func _ready():
 	__timer = Timer.new()
 	add_child(__timer)
 	__timer.wait_time = 0.5
-	#__timer.start()
+	__timer.start()
 	__timer.connect("timeout", self, "_outputMana")
 
 func canInputMana(fromIndex: Vector2) -> bool:
-	
-	var fromTop = absoluteToRelativeDirection(from) == RuneEnums.Direction.TOP
-	var fromRight = absoluteToRelativeDirection(from) == RuneEnums.Direction.RIGHT
+	var fromTop = getRelativeTopRuneIndex() == fromIndex
+	var fromRight = getRelativeRightRuneIndex() == fromIndex
 	return __manaCarried.size() <= 0 && (fromTop || fromRight)
 
 func inputMana(mana, fromDirection, fromRune):
 	self.add_child(mana)
-	__inputDirection = absoluteToRelativeDirection(fromDirection)
-	print("In Mana: " + str(RuneEnums.Direction.keys()[__inputDirection]))
 	__timer.start()
 	__manaCarried.append(mana)
-	print(__manaCarried)
-	print("Mana added")
-
+	setManaRotation(mana)
 
 func _outputMana() -> void:
-	
-	var outDirection
-	if __inputDirection == RuneEnums.Direction.TOP:
-		outDirection = RuneEnums.Direction.RIGHT
-	elif __inputDirection == RuneEnums.Direction.RIGHT:
-		outDirection = RuneEnums.Direction.TOP
-	else:
-		printerr("! Err: Wrong dir given (from Mana.gd)")
-	var nextRune = getAdjectedRuneRelative(outDirection)
 	if __manaCarried.size() <= 0:
-		# no mana to give 
+		# no mana to give
 		return
-	#print("out Dir")
-	#print(RuneEnums.Direction.keys()[outDirection])
-	if nextRune == null ||  !nextRune.is_in_group("Rune"):
-		# invalid adjected rune
+	
+	var outRune = getOutRune()
+	
+	if !outRune || !outRune.is_in_group("Rune") || !outRune.canInputMana(__index):
 		return
-	print("InDir "+ str(RuneEnums.dirIntToString(__inputDirection))+
-	" Outdir "+ str(RuneEnums.Direction.keys()[outDirection])+ 
-	" Rot: " + str(__runeRotation) + 
-	" goal Dir: " + str(RuneEnums.dirIntToString(relativeToAbsoluteDirection(RuneEnums.invertDirection(outDirection)))) )
-	if nextRune.canInputMana(relativeToAbsoluteDirection(RuneEnums.invertDirection(outDirection))):
-		print(__manaCarried)
-		var removedMana = __manaCarried[0]
-		__manaCarried.remove(0)
-		print(__manaCarried)
-		print(removedMana)
-		self.remove_child(removedMana)
-		
-		nextRune.inputMana(removedMana, relativeToAbsoluteDirection(outDirection), self)
-		print("mana Removed")
-		pass
+	
+	var removedMana = __manaCarried[0]
+	resetManaRotation(removedMana)
+	__manaCarried.remove(0)
+	self.remove_child(removedMana)
+	outRune.inputMana(removedMana, __index, self)
+	
+	__timer.stop()
+
+
+func getOutRune() -> Node2D:
+	var randomFirstOutputTry = randi() % 2
+	
+	var topRuneIndex = getRelativeTopRuneIndex()
+	var topRune = __runeGrid.getRuneByIndex(topRuneIndex)
+	
+	var rightRuneIndex = getRelativeRightRuneIndex()
+	var rightRune = __runeGrid.getRuneByIndex(rightRuneIndex)
+	
+	if randomFirstOutputTry == 0:
+		if topRune && topRune.canInputMana(__index):
+			return topRune
+		else:
+			return rightRune
+	else:
+		if rightRune && rightRune.canInputMana(__index):
+			return rightRune
+		else:
+			return topRune
+	return null
+
+func setManaRotation(mana: Node2D):
+	mana.rotation_degrees = -45
+
+func resetManaRotation(mana: Node2D):
+	mana.rotation_degrees = 0

@@ -13,39 +13,34 @@ func _ready():
 	#__timer.start()
 	__timer.connect("timeout", self, "_outputMana")
 
-func canInputMana(from: int) -> bool:
-	return __manaCarried.size() <= 0 && absoluteToRelativeDirection(from) == RuneEnums.Direction.TOP
+func canInputMana(fromIndex: Vector2) -> bool:
+	return __manaCarried.size() <= 0 && getRelativeTopRuneIndex() == fromIndex
+
 
 func inputMana(mana, fromDirection, fromRune):
 	self.add_child(mana)
 	
 	__timer.start()
 	__manaCarried.append(mana)
-	print(__manaCarried)
-	print("Mana added")
 
+func getRuneOutputIndex() -> Vector2:
+	return getRelativeBottomRuneIndex()
 
 func _outputMana() -> void:
-	#__timer.stop()
-	var nextRune = getAdjectedRuneRelative(RuneEnums.Direction.BOTTOM)
 	if __manaCarried.size() <= 0:
 		# no mana to give 
 		return
 	
-	if nextRune == null ||  !nextRune.is_in_group("Rune"):
-		# invalid adjected rune
+	
+	var outRuneIndex = getRelativeBottomRuneIndex()
+	var outRune = __runeGrid.getRuneByIndex(outRuneIndex)
+	
+	if !outRune || !outRune.is_in_group("Rune") || !outRune.canInputMana(__index):
 		return
 	
-	var absoluteDirectionFrom = relativeToAbsoluteDirection(RuneEnums.Direction.TOP)
-	if nextRune.canInputMana(absoluteDirectionFrom):
-		print(__manaCarried)
-		var removedMana = __manaCarried[0]
-		__manaCarried.remove(0)
-		print(__manaCarried)
-		print(removedMana)
-		self.remove_child(removedMana)
-		
-		nextRune.inputMana(removedMana, absoluteDirectionFrom, self)
-		print("mana Removed")
-		pass
+	var removedMana = __manaCarried[0]
+	__manaCarried.remove(0)
+	self.remove_child(removedMana)
+	outRune.inputMana(removedMana, __index, self)
+	__timer.stop()
 

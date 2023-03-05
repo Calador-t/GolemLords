@@ -4,9 +4,7 @@
 [ext_resource path="res://Runes/RuneBlueprint.tscn" type="PackedScene" id=2]
 [ext_resource path="res://Runes/EmitterRune.gd" type="Script" id=3]
 
-[node name="Rune_Blueprint" groups=[
-"Rune",
-] instance=ExtResource( 2 )]
+[node name="Rune_Blueprint" instance=ExtResource( 2 )]
 script = ExtResource( 3 )
 
 [node name="Sprite" parent="." index="0"]
