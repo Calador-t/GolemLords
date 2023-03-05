@@ -5,10 +5,21 @@ class_name Rune
 var __topRune = null
 var __bottomRune = null
 var __leftRune = null
-var __rightRune = null 
+var __rightRune = null
 
 var __manaCarried: Array
 var __runeRotation: int = 0
+var __index: Vector2
+var __runeGrid
+
+func setIndex(index: Vector2):
+	print(index)
+	__index = index
+func getIndex() -> Vector2:
+	return __index
+
+func setRuneGrid(runeGrid):
+	__runeGrid = runeGrid
 
 func setTopRune(topRune):
 	__topRune = topRune
@@ -20,10 +31,10 @@ func setRightRune(rightRune):
 	__rightRune = rightRune
 
 
-func canInputMana(from: int) -> bool:
+func canInputMana(fromIndex: Vector2) -> bool:
 	return __manaCarried.size() <= 0
 
-func inputMana(mana, fromDirection, fromRune):
+func inputMana(mana, fromIndex: Vector2, fromRune):
 	pass
 
 func getAdjectedRuneRelative(fromDirection: int) -> Node2D:
@@ -38,6 +49,8 @@ func getAdjectedRuneRelative(fromDirection: int) -> Node2D:
 		RuneEnums.Direction.RIGHT:
 			return __rightRune
 	return null
+
+
 
 func relativeToAbsoluteDirection(fromDirection: int) -> int:
 	var directionInt = 0

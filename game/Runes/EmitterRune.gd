@@ -15,16 +15,28 @@ func _ready():
 	__timer.connect("timeout", self, "_emitt")
 
 func _emitt() -> void:
-	var nextRune = getAdjectedRuneRelative(RuneEnums.Direction.BOTTOM)
-	var newMana = mana.instance()
-
-	if nextRune == null ||  !nextRune.is_in_group("Rune"):
+	var outRuneIndex = getRuneOutputIndex()
+	var outRune = __runeGrid.getRuneByIndex(outRuneIndex)
+	if outRune == null ||  !outRune.is_in_group("Rune"):
 		# invalid adjected rune
 		return
+	var newMana = mana.instance()
 	var absoluteDirectionFrom = relativeToAbsoluteDirection(RuneEnums.Direction.TOP)
-	if nextRune.canInputMana(absoluteDirectionFrom):
-		nextRune.inputMana(newMana, absoluteDirectionFrom, self)
+	
+	if outRune.canInputMana(__index):
+		outRune.inputMana(newMana, __index, self)
 
+func getRuneOutputIndex() -> Vector2:
+	match __runeRotation:
+		0:
+			return __index + Vector2(0, -1)
+		1:
+			return __index + Vector2(-1, 0)
+		2:
+			return __index + Vector2(0, 1)
+		3:
+			return __index + Vector2(1, 0)
+	return Vector2()
 
-func canInputMana(from: int) -> bool:
+func canInputMana(fromIndex: Vector2) -> bool:
 	return false

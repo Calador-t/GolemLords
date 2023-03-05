@@ -51,6 +51,8 @@ func _unhandled_input(event):
 		if newRune != null:
 			addAdjectedRunes(newRune, settingSocketRotation, settingSocketIndex)
 			updateAdjectedRunes(newRune, settingSocketIndex)
+			newRune.setRuneGrid(self)
+			newRune.setIndex(settingSocketIndex)
 			newRune.position = indexToPos(settingSocketIndex)
 			if __runeGrid[settingSocketIndex.x][settingSocketIndex.y] != null:
 				__runeGrid[settingSocketIndex.x][settingSocketIndex.y].queue_free()
@@ -67,6 +69,7 @@ func addAdjectedRunes(rune, rotation: int, index: Vector2):
 		var rightRune = getRightRuneSafe(index)
 		
 		var rotate: int = rotation % 360 / 90 as int
+		
 		rune.setRuneRotation(rotate)
 		rune.setTopRune(topRune)
 		rune.setBottomRune(bottomRune)
@@ -74,6 +77,14 @@ func addAdjectedRunes(rune, rotation: int, index: Vector2):
 		rune.setRightRune(rightRune)
 		pass
 	pass
+
+func getRuneByIndex(index: Vector2):
+	var validX = index.x >= 0 && index.x < __runeGrid.size()
+	var validY = index.y >= 0 && index.y < __runeGrid[0].size()
+	
+	if validX && validY:
+		return __runeGrid[index.x][index.y]
+	return null
 
 func updateAdjectedRunes(rune, index: Vector2):
 	var topRune = getTopRuneSafe(index)

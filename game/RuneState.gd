@@ -11,7 +11,6 @@ enum statTypes {
 	AMMOUNT,
 	SPREAD,
 	BOUNCE, # How often it bounces from the screen Edge
-	
 }
 
 # Some runes have tags. They group runes by type and can add effects
@@ -20,7 +19,6 @@ enum tags{
 	OUTPUT,
 	INPUT,
 	CONNECTOR,
-	
 }
 
 var __power

@@ -13,7 +13,8 @@ func _ready():
 	#__timer.start()
 	__timer.connect("timeout", self, "_outputMana")
 
-func canInputMana(from: int) -> bool:
+func canInputMana(fromIndex: Vector2) -> bool:
+	
 	var fromTop = absoluteToRelativeDirection(from) == RuneEnums.Direction.TOP
 	var fromRight = absoluteToRelativeDirection(from) == RuneEnums.Direction.RIGHT
 	return __manaCarried.size() <= 0 && (fromTop || fromRight)
